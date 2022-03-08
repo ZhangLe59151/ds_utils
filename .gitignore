@@ -1,3 +1,8 @@
+# customize
+dist/*
+ds_utils.egg-info/*
+upload_pypi.sh
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
