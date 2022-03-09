@@ -14,6 +14,8 @@ def create_date_df(startDate = '20200101', endDate = '20210101'):
 def sg_holiday_feature(holiday_df, startDate = '20200101', endDate = '20210101'):
   date_pd = create_date_df(startDate = startDate, endDate = endDate)
   holiday_df.rename(columns = {'Date':'DATE'}, inplace = True)
+  holiday_df =holiday_df.sort_values(by='DATE')
+  holiday_df['DATE'] = pd.to_datetime(holiday_df['DATE'], infer_datetime_format=True)
   df = date_pd.merge(holiday_df, on='DATE', how = 'left')
   df['Holiday'] = df['Holiday'].fillna('Non-Holiday')
   df = df[['DATE', 'Holiday']]
