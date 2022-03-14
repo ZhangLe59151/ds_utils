@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="utils_for_ds",
-    version="0.0.6",
+    version="0.0.13",
     author="ZhangLe",
     author_email="zhangle@gmail.com",
     description="common used functions for Data Scientist",
@@ -34,6 +34,7 @@ setuptools.setup(
       'matplotlib>=3.1.1',
       'pickleshare>=0.7.5',
       'cloudpickle>=1.2.2',
-      'optuna>=2.10.0'],
+      'optuna>=2.10.0',
+      'seaborn>=0.9.0'],
     python_requires=">=3.6",
 )
