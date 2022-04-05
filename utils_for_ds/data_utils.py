@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import TimeSeriesSplit
 import seaborn as sns
 import numpy as np
-from utils_for_ds.message import WRONG_DATE_INPUT
+from utils_for_ds.message import Message
 
-def create_date_df(startDate = '20200101', endDate = '20210101'):
+def create_date_df(startDate = '20210101', endDate = '20210101'):
     format_pattern = '%Y%m%d'
     difference = (datetime.strptime(endDate, format_pattern) - datetime.strptime(startDate, format_pattern))
     if difference.days < 0:
-        print(WRONG_DATE_INPUT.value)
+        print(Message.WRONG_DATE_INPUT.value)
         return False
     date_list = [datetime.strftime(x, '%Y-%m-%d') for x in list(pd.date_range(start = startDate, end= endDate))]
     date_pd = pd.DataFrame(date_list)
@@ -112,3 +112,4 @@ def set_label(df, label_column):
   label_list = np.unique(df[label_column])
   df[label_column] = df[label_column].map(lambda x: np.argwhere(label_list == x)[0][0])
   return df, label_list
+
