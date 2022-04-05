@@ -1,6 +1,10 @@
 from tensorflow.keras.layers import LSTM, Dropout, Dense, Layer, Concatenate, LayerNormalization, Conv1D, GlobalAveragePooling1D
 from tensorflow.keras import Input, Model
 from tensorflow.keras.models import Sequential
+import time
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from tcn import TCN
 
 #   ------------------------  lstm  -------------------------- 
 def lstm_model_custmize(look_back, look_forward, n_features, dropout=0.5, print_summary=False, n_neurons = [128]):
@@ -161,3 +165,34 @@ def transformer_model_custmize(look_back, look_forward, n_features, n_heads = 5,
     if print_summary:
       print(model.summary())
     return model
+
+#------------------  Xgb Classification ----------------------------------------------------
+def train_xgb(df, label_column, num_class, epoch = 100):
+    start_time = time.time()
+    y_data = df[label_column]
+    x_data = df.drop(columns = [label_column])
+    X_train, X_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.2)
+    dtrain = xgb.DMatrix(X_train, label = y_train)
+    dtest = xgb.DMatrix(X_val)
+    params = {
+    'booster': 'gbtree',
+    'objective': 'multi:softmax', #多分类'multi:softmax'返回预测的类别(不是概率)，'multi:softprob'返回概率
+    'num_class': num_class,
+    'eval_metric': 'merror', #二分类用’auc‘，多分类用'mlogloss'或'merror'
+    'max_depth': 7,
+    'lambda': 15,
+    'subsample': 0.75,
+    'colsample_bytree': 0.75,
+    'min_child_weight': 1,
+    'eta': 0.025,  # lr
+    'seed': 0,
+    'nthread': 8,
+    'silent': 1,
+    'gamma': 0.15,
+    'learning_rate': 0.01}
+    watchlist = [(dtrain, 'train')]
+    model = xgb.train(params, dtrain, num_boost_round = epoch, evals = watchlist)
+    y_pred = model.predict(dtest)
+    end_time = time.time()
+    print('time cost : ', round((end_time - start_time) / 60, 2), 'min')
+    return model, y_pred, y_val
