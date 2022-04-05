@@ -6,14 +6,20 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import TimeSeriesSplit
 import seaborn as sns
 import numpy as np
+from utils_for_ds.message import WRONG_DATE_INPUT
 
 def create_date_df(startDate = '20200101', endDate = '20210101'):
-  date_list = [datetime.strftime(x, '%Y-%m-%d') for x in list(pd.date_range(start = startDate, end= endDate))]
-  date_pd = pd.DataFrame(date_list)
-  date_pd.rename(columns={0:'DATE'}, inplace= True)
-  date_pd = date_pd.sort_values(by='DATE')
-  date_pd['DATE'] = pd.to_datetime(date_pd['DATE'], infer_datetime_format=True)
-  return date_pd
+    format_pattern = '%Y%m%d'
+    difference = (datetime.strptime(endDate, format_pattern) - datetime.strptime(startDate, format_pattern))
+    if difference.days < 0:
+        print(WRONG_DATE_INPUT.value)
+        return False
+    date_list = [datetime.strftime(x, '%Y-%m-%d') for x in list(pd.date_range(start = startDate, end= endDate))]
+    date_pd = pd.DataFrame(date_list)
+    date_pd.rename(columns={0:'DATE'}, inplace= True)
+    date_pd = date_pd.sort_values(by='DATE')
+    date_pd['DATE'] = pd.to_datetime(date_pd['DATE'], infer_datetime_format=True)
+    return date_pd
 
 def sg_holiday_feature(holiday_df, startDate = '20200101', endDate = '20210101'):
   date_pd = create_date_df(startDate = startDate, endDate = endDate)

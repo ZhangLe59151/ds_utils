@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="utils_for_ds",
-    version="0.0.13",
+    version="0.0.15",
     author="ZhangLe",
     author_email="zhangle@gmail.com",
     description="common used functions for Data Scientist",
